@@ -4,7 +4,7 @@
 
 # Descripción del Proyecto:
 
-El proyecto consiste en desarrollar un sistema en Prolog que genere un cronograma óptimo para la asignación de tareas en un centro de trabajo. Este sistema tomará en cuenta las disponibilidades de los trabajadores, las habilidades requeridas por las tareas, la disponibilidad de recursos o herramientas, y otras restricciones (como priorización de tareas o dependencias entre ellas).
+El proyecto consiste en desarrollar un sistema en Haskell que genere un cronograma óptimo para la asignación de tareas en un centro de trabajo. Este sistema tomará en cuenta las disponibilidades de los trabajadores, las habilidades requeridas por las tareas, la disponibilidad de recursos o herramientas, y otras restricciones (como priorización de tareas o dependencias entre ellas).
 Los objetivos principales del planificador son:
 
 1. Garantizar que cada tarea sea realizada por un trabajador adecuado y en un horario válido.
@@ -13,9 +13,9 @@ Los objetivos principales del planificador son:
 
 # Justificación del uso de programación declarativa:
 
-El proyecto utilizará Prolog:
+El proyecto utilizará Haskell:
  • Modelar relaciones complejas: Los horarios, recursos y tareas se representan directamente como hechos.
- • Simplificar la solución: Prolog explora automáticamente todas las combinaciones posibles hasta encontrar las asignaciones válidas, sin necesidad de escribir algoritmos imperativos complejos.
+ • Simplificar la solución: Haskell explora automáticamente todas las combinaciones posibles hasta encontrar las asignaciones válidas, sin necesidad de escribir algoritmos imperativos complejos.
 Características destacadas:
  • Priorización automática de tareas según su importancia o dependencias.
  • Generación de cronogramas respetando horarios de disponibilidad, habilidades, y recursos.
