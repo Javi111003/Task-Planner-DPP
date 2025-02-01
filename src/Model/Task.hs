@@ -1,7 +1,7 @@
-module Task (Task(..)) where
+module Model.Task (Task(..)) where
 
-import Date
-import Resource
+import Model.Date
+import Model.Resource
 
 data Task = Task {
     taskId :: Int,
