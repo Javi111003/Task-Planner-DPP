@@ -1,6 +1,6 @@
 module Main where
 
-import Work
+import Task
 import Worker
 
 main :: IO ()

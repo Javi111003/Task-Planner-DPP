@@ -1,0 +1,19 @@
+# Ignorar directorios y archivos específicos de stack
+.stack-work/
+stack.yaml.lock
+package.yaml
+stack.yaml
+Task-Planner-DPP.cabal
+# Archivos de vscode
+.vscode/
+
+# Ignorar otros archivos generados
+dist/
+dist-newstyle/
+*.hi
+*.o
+*.hcr
+*.prof
+*.aux
+*.hp
+*.eventlog
