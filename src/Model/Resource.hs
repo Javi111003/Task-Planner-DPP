@@ -1,5 +1,5 @@
-module Resource (Resource(..)) where
-import Date
+module Model.Resource (Resource(..)) where
+import Model.Date
 
 data ResourceType = Infinity | Limited deriving (Show, Eq)
 

@@ -1,4 +1,4 @@
-module Worker (Worker(..)) where
+module Model.Worker (Worker(..)) where
 
 data Worker = Worker {
     workerId :: Int,

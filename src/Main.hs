@@ -1,7 +1,7 @@
 module Main where
 
-import Task
-import Worker
+import Model.Task
+import Model.Worker
 
 main :: IO ()
 main = do
