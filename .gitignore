@@ -17,3 +17,6 @@ dist-newstyle/
 *.aux
 *.hp
 *.eventlog
+
+#Ignorar el Main.exe
+*.exe
