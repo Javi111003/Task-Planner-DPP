@@ -11,8 +11,8 @@ type ResourceUsage = Map Resource (Map Day (Map TimeSlot Int))
 -- Recurso 1 (3 martillos) está ocupado el día 2023-10-01 en el slot 9-12: 2 unidades.
 
 data SystemState = SystemState
-  { workers     :: Map Worker [TimeSlot], -- Slots ocupados por trabajador
-    resources   :: ResourceUsage, -- Uso de recursos por día y timeSlot
+  { workersSchedule     :: Map Worker [TimeSlot], -- Slots ocupados por trabajador
+    resourcesUsage   :: ResourceUsage, -- Uso de recursos por día y timeSlot
     assignedTasks    :: Map Task (TimeSlot, [Worker], [(Resource, Int)]),  
     unassignedTasks  :: [Task]  -- Tareas que quedan sin asignar           
   } deriving (Show)

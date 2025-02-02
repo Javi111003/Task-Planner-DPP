@@ -1,10 +1,10 @@
-module Model.Resource (Resource(..)) where
+module Model.Resource (Resource(..), ResourceType(..)) where
 
-data ResourceType = Infinite | Limited deriving (Show, Eq)
+data ResourceType = Infinite | Limited deriving (Show, Eq, Ord)
 
 data Resource = Resource{
     resourceId :: Int,
     name :: String,
     resourceQty :: Int,
     resourceType :: ResourceType
-} deriving (Show, Eq)
+} deriving (Show, Eq, Ord)
