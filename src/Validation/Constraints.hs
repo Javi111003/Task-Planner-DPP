@@ -14,19 +14,18 @@ import Data.List (intersect, union)
 
 -- Validación de habilidades del trabajador
 hasRequiredSkills :: Worker -> Task -> Bool
-hasRequiredSkills worker task =
-  not . null $ skills worker `intersect` requiredSkills task
+hasRequiredSkills worker task = all (`elem` requiredSkills task) (skills worker)
 
 -- Validación de disponibilidad temporal
 isWorkerAvailable :: Worker -> TimeSlot -> SystemState -> Bool
-isWorkerAvailable worker@Worker{..} slot SystemState{..} =
-  date slot `elem` availableDays &&
-  (endHour slot - startHour slot) <= maxHoursPerDay &&
+isWorkerAvailable worker slot state =
+  date slot `elem` availableDays worker &&
+  (endHour slot - startHour slot) <= maxHoursPerDay worker &&
   not (any (overlaps slot) workerSlots)
   where
-    workerSlots = Map.findWithDefault [] worker workersSchedule
-    overlaps s1 s2 = date s1 == date s2 
-                   && startHour s1 < endHour s2 
+    workerSlots = Map.findWithDefault [] worker (workersSchedule state)
+    overlaps s1 s2 = date s1 == date s2
+                   && startHour s1 < endHour s2
                    && endHour s1 > startHour s2
 
 -- Validación de recursos
@@ -40,18 +39,17 @@ isResourceAvailable resource qty slot SystemState{..} =
           used = sum $ Map.filterWithKey (\k _ -> overlaps k slot) slotUsage
       in (resourceQty resource - used) >= qty
   where
-    overlaps s1 s2 = date s1 == date s2 
-                   && startHour s1 < endHour s2 
+    overlaps s1 s2 = date s1 == date s2
+                   && startHour s1 < endHour s2
                    && endHour s1 > startHour s2
 
 -- Validación de grupo de trabajadores
 validateWorkerGroup :: [Worker] -> Task -> Bool
 validateWorkerGroup workers task =
-  all (`hasRequiredSkills` task) workers &&
-  (unionAllSkills `containsAll` requiredSkills task)
+  unionAllSkills `containsAll` requiredSkills task
   where
     unionAllSkills = foldr (\w acc -> skills w `union` acc) [] workers
-    containsAll xs ys = all (`elem` xs) ys
+    containsAll xs = all (`elem` xs)
 
 -- Validación completa para una tarea
 validateAssignment :: Task -> [Worker] -> TimeSlot -> SystemState -> Bool
