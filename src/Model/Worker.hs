@@ -6,7 +6,7 @@ import Data.Map (Map)
 
 data Worker = Worker {
     workerId :: Int,
-    name :: String,
+    workerName :: String,
     availableDays :: [Day],
     maxHoursPerDay :: Int,
     skills :: [String],

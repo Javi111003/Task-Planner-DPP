@@ -14,7 +14,7 @@ import Data.List (intersect, union)
 
 -- Validación de habilidades del trabajador
 hasRequiredSkills :: Worker -> Task -> Bool
-hasRequiredSkills worker task = all (`elem` requiredSkills task) (skills worker)
+hasRequiredSkills worker task = all (`elem` skills worker) (requiredSkills task)
 
 -- Validación de disponibilidad temporal
 isWorkerAvailable :: Worker -> TimeSlot -> SystemState -> Bool
@@ -46,10 +46,7 @@ isResourceAvailable resource qty slot SystemState{..} =
 -- Validación de grupo de trabajadores
 validateWorkerGroup :: [Worker] -> Task -> Bool
 validateWorkerGroup workers task =
-  unionAllSkills `containsAll` requiredSkills task
-  where
-    unionAllSkills = foldr (\w acc -> skills w `union` acc) [] workers
-    containsAll xs = all (`elem` xs)
+  all (`elem` concatMap skills workers) (requiredSkills task)
 
 -- Validación completa para una tarea
 validateAssignment :: Task -> [Worker] -> TimeSlot -> SystemState -> Bool
