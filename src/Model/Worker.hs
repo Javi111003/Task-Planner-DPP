@@ -7,8 +7,8 @@ import Data.Map (Map)
 data Worker = Worker {
     workerId :: Int,
     name :: String,
-    availableSlots :: [Day],
+    availableDays :: [Day],
     maxHoursPerDay :: Int,
     skills :: [String],
     currentSchedule :: [TimeSlot]
-} deriving (Show, Eq)
+} deriving (Show, Eq, Ord)
