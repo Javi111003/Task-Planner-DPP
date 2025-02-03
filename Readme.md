@@ -2,9 +2,9 @@
 
 **A Declarative Task and Resource Planner for Workplace Optimization**  
 *Third-Year Declarative Programming Project | Computer Science Degree*
-- Javier Alejandro González Díaz
-- Kevin Márquez Vega
-- José Miguel Leyva de la Cruz
+- Javier Alejandro González Díaz C-312
+- Kevin Márquez Vega C-312
+- José Miguel Leyva de la Cruz C-312
 ---
 
 ## 📜 Project Description
