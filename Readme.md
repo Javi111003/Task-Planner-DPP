@@ -1,23 +1,64 @@
-# Título del Proyecto
+# Task-Planner-DPP
 
-## Planificador de Tareas y Recursos en un Centro de Trabajo
+**A Declarative Task and Resource Planner for Workplace Optimization**  
+*Third-Year Declarative Programming Project | Computer Science Degree*
+- Javier Alejandro González Díaz
+- Kevin Márquez Vega
+- José Miguel Leyva de la Cruz
+---
 
-# Descripción del Proyecto:
+## 📜 Project Description
 
-El proyecto consiste en desarrollar un sistema en Haskell que genere un cronograma óptimo para la asignación de tareas en un centro de trabajo. Este sistema tomará en cuenta las disponibilidades de los trabajadores, las habilidades requeridas por las tareas, la disponibilidad de recursos o herramientas, y otras restricciones (como priorización de tareas o dependencias entre ellas).
-Los objetivos principales del planificador son:
+**Task-Planner-DPP** is a Haskell-based system designed to generate optimal task schedules for workplaces. It intelligently assigns tasks to workers while respecting constraints such as: 
+- Worker availability and skills, 
+- Resource/tool availability, 
+- Task deadlines and priorities, 
+- Workload balance across teams.
 
-1. Garantizar que cada tarea sea realizada por un trabajador adecuado y en un horario válido.
-2. Respetar la disponibilidad de los recursos necesarios para completar las tareas.
-3. Crear un cronograma eficiente que minimice tiempos muertos y balancee la carga laboral entre los trabajadores.
+The planner uses **declarative programming paradigms** to model complex relationships between tasks, workers, and resources, enabling automatic exploration of valid assignments without imperative control flow.
 
-# Justificación del uso de programación declarativa:
+---
 
-El proyecto utilizará Haskell:
- • Modelar relaciones complejas: Los horarios, recursos y tareas se representan directamente como hechos.
- • Simplificar la solución: Haskell explora automáticamente todas las combinaciones posibles hasta encontrar las asignaciones válidas, sin necesidad de escribir algoritmos imperativos complejos.
-Características destacadas:
- • Priorización automática de tareas según su importancia o dependencias.
- • Generación de cronogramas respetando horarios de disponibilidad, habilidades, y recursos.
- • Equilibrio en la carga de trabajo entre empleados.
- • Sistema extensible para agregar nuevas restricciones o mejorar las reglas de optimización.
+## 🎯 Key Features
+
+- **Automatic Task Prioritization**: Sorts tasks by deadlines and dependencies.
+- **Resource Management**: Handles finite/infinite resources and tracks availability.
+- **Skill-Based Assignments**: Ensures workers have required skills for tasks.
+- **Time Slot Optimization**: Generates conflict-free schedules using `TimeSlot` constraints.
+- **Workload Balancing**: Distributes tasks evenly across workers.
+- **Extensible Rules**: Add new constraints (e.g., equipment sharing, team collaboration).
+
+---
+
+## 🧠 Declarative Programming Approach
+
+This project leverages Haskell’s strengths in declarative programming:
+- **Immutable Data**: `SystemState` safely models worker/resource availability.
+- **Pure Functions**: Validation and scheduling logic is side-effect-free.
+- **Expressive Types**: Rich type system for tasks (`Task`), workers (`Worker`), and resources (`Resource`).
+- **Lazy Evaluation**: Efficiently explores possible schedules without redundant computations.
+
+---
+
+## 📦 Key Concepts
+
+| Concept          | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| **Task**         | A unit of work with skills, resources, duration, and deadline.             |
+| **Worker**       | An employee with skills, availability days, and hourly limits.             |
+| **Resource**     | A tool/equipment (e.g., `Exclusive` or `Infinite` type).                    |
+| **TimeSlot**     | A time window (`Day`, start/end hour) for task assignments.                 |
+| **SystemState**  | Global state tracking worker schedules, resource usage, and task assignments. |
+
+---
+
+## 🛠️ Installation & Usage
+
+### Prerequisites
+- [Haskell Stack](https://docs.haskellstack.org/)
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/Task-Planner-DPP.git
+   cd Task-Planner-DPP
