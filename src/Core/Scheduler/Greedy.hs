@@ -2,6 +2,7 @@
 
 module Core.Scheduler.Greedy where
 
+<<<<<<< HEAD
 import Model.Resource 
 import Model.Task
 import Model.TimeSlot
@@ -66,3 +67,6 @@ import Data.Maybe (listToMaybe)
 --    processTask state task = case findAvailableSlot task workers state of
 --      Just slot -> updateSystemState task workers slot state
 --     Nothing -> state { unassignedTasks = task : unassignedTasks state }
+=======
+-- Aqui haremos para planificar tareas semanal/mensualmente con una estrategia greedy intentando hacer la mayor cantidad de tareas cada dia
+>>>>>>> 68548ab (fix: adjusted domain to new model)

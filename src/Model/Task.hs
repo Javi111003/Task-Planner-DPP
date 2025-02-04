@@ -1,5 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 module Model.Task (Task(..)) where
+--import Data.Time.Calendar (Day)
+--import Model.Resource
 
 import Data.Time.Calendar (Day)
 import Model.Resource

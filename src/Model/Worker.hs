@@ -14,6 +14,12 @@ import Data.Map (Map)
 -- skills : listad de habilidades que posee el trabajador
 -- currentSchedule: lista de intervalos de tiempo durante el que esta actualmente ocupado
 
+-- Entidad que representa un trabajador
+-- workerId : Identifica univocamente a cada trabajador
+-- name : nombre del trabajador(para mostrar)
+-- skills: lista de habilidades del trabajador
+-- currentSchedule : Lista de intervalos de tiempo en el que esta ocupado durante el dia
+
 data Worker = Worker {
     workerId :: Int,
     workerName :: String,
