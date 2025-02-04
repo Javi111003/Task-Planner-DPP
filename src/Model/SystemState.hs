@@ -8,8 +8,8 @@ import Model.Worker
 import Model.Task
 import Model.Resource
 import Data.Time.Calendar (Day)
-import GHC.Generics (Generic)
-import Data.Aeson (FromJSON, ToJSON)
+--import GHC.Generics (Generic)
+--import Data.Aeson (FromJSON, ToJSON)
 
 type ResourceUsage = Map Resource (Map Day (Map TimeSlot Int))
 -- Recurso 1 (3 martillos) está ocupado el día 2023-10-01 en el slot 9-12: 2 unidades.
@@ -21,5 +21,5 @@ data SystemState = SystemState
     unassignedTasks  :: [Task]  -- Tareas que quedan sin asignar           
   } deriving (Show, Generic)
 
-instance FromJSON SystemState --Autoderivado
-instance ToJSON SystemState
+--instance FromJSON SystemState --Autoderivado
+--instance ToJSON SystemState
