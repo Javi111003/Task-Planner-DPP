@@ -16,32 +16,43 @@ import Data.List (intersect, union)
 hasRequiredSkills :: Worker -> Task -> Bool
 hasRequiredSkills worker task = all (`elem` skills worker) (requiredSkills task)
 
+--Quitar Trabajador Innecesario
+isMinCover :: [Worker] -> Task -> Bool
+isMinCover workers task = null [w | w <- workers, validateWorkerGroup (remove workers w) task]
+
+--Obtener que grupos de Trabajadores pueden hacer una tarea determinada
+getValidWorkingTeams :: Task -> [[Worker]] -> (Task, [[Worker]])
+getValidWorkingTeams task teams = (task, [team | team <- teams, validateWorkerGroup team task ,isMinCover team task])
+
+--Obtener los horarios en los que se puede realizar una tarea
+getValidTimesForTask :: (Task,[Worker]) -> TimeSlot -> [TimeSlot]
+getValidTimesForTask (task, workers) lot  = let ts = [TimeSlot a b | a <- [(startHour lot) .. (endHour lot)], b <- [(startHour lot) .. (endHour lot)], a <= b, b - a == estimatedTime task]
+                                        in [t | t <- ts, isPossibleWorkForAll workers t]
+
+isPossibleWorkForAll :: [Worker] -> TimeSlot -> Bool
+isPossibleWorkForAll [] _ = True
+isPossibleWorkForAll (worker:workers) timeSlot = isWorkerAvailable worker timeSlot && isPossibleWorkForAll workers timeSlot
+
 -- Validación de disponibilidad temporal
-isWorkerAvailable :: Worker -> TimeSlot -> SystemState -> Bool
-isWorkerAvailable worker slot state =
-  date slot `elem` availableDays worker &&
-  (endHour slot - startHour slot) <= maxHoursPerDay worker &&
-  not (any (overlaps slot) workerSlots)
-  where
-    workerSlots = Map.findWithDefault [] worker (workersSchedule state)
-    overlaps s1 s2 = date s1 == date s2
-                   && startHour s1 < endHour s2
-                   && endHour s1 > startHour s2
+isWorkerAvailable :: Worker -> TimeSlot -> Bool
+isWorkerAvailable worker slot =
+  not (any (overlaps slot) (currentSchedule worker))
+  where overlaps s1 s2 = startHour s1 < endHour s2 && endHour s1 > startHour s2
 
 -- Validación de recursos
-isResourceAvailable :: Resource -> Int -> TimeSlot -> SystemState -> Bool
-isResourceAvailable resource qty slot SystemState{..} =
-  case resourceType resource of
-    Infinite -> True
-    Limited ->
-      let dayUsage = Map.findWithDefault Map.empty resource resourcesUsage
-          slotUsage = Map.findWithDefault Map.empty (date slot) dayUsage
-          used = sum $ Map.filterWithKey (\k _ -> overlaps k slot) slotUsage
-      in (resourceQty resource - used) >= qty
-  where
-    overlaps s1 s2 = date s1 == date s2
-                   && startHour s1 < endHour s2
-                   && endHour s1 > startHour s2
+--isResourceAvailable :: Resource -> Int -> TimeSlot -> SystemState -> Bool
+--isResourceAvailable resource qty slot SystemState{..} =
+--  case resourceType resource of
+--    Infinite -> True
+--    Limited ->
+--      let dayUsage = Map.findWithDefault Map.empty resource resourcesUsage
+--          slotUsage = Map.findWithDefault Map.empty (date slot) dayUsage
+--          used = sum $ Map.filterWithKey (\k _ -> overlaps k slot) slotUsage
+--      in (resourceQty resource - used) >= qty
+--  where
+--    overlaps s1 s2 = date s1 == date s2
+--                   && startHour s1 < endHour s2
+--                   && endHour s1 > startHour s2
 
 -- Validación de grupo de trabajadores
 validateWorkerGroup :: [Worker] -> Task -> Bool
@@ -49,8 +60,12 @@ validateWorkerGroup workers task =
   all (`elem` concatMap skills workers) (requiredSkills task)
 
 -- Validación completa para una tarea
-validateAssignment :: Task -> [Worker] -> TimeSlot -> SystemState -> Bool
-validateAssignment task workers slot state =
-  validateWorkerGroup workers task &&
-  all (\w -> isWorkerAvailable w slot state) workers &&
-  all (\(r, q) -> isResourceAvailable r q slot state) (requiredResources task)
+--validateAssignment :: Task -> [Worker] -> TimeSlot -> SystemState -> Bool
+--validateAssignment task workers slot state =
+--  validateWorkerGroup workers task &&
+--  all (\w -> isWorkerAvailable w slot state) workers &&
+--  all (\(r, q) -> isResourceAvailable r q slot state) (requiredResources task)
+
+remove :: Eq a => [a] -> a -> [a]
+remove [] _ = []
+remove (x:xs) y = if x == y then xs else x: remove xs y

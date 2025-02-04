@@ -8,7 +8,7 @@ import Model.Worker
 import Model.Task
 import Model.Resource
 import Data.Time.Calendar (Day)
---import GHC.Generics (Generic)
+import GHC.Generics (Generic)
 --import Data.Aeson (FromJSON, ToJSON)
 
 type ResourceUsage = Map Resource (Map Day (Map TimeSlot Int))
