@@ -1,9 +1,17 @@
-module Model.Task (Task(..)) where
+{-# LANGUAGE DeriveGeneric #-}
+module Model.Task (Task(..), PriorityType(..)) where
 
 import Data.Time.Calendar (Day)
 import Model.Resource
+import GHC.Generics (Generic)
+import Data.Aeson (FromJSON, ToJSON)
+import Data.Aeson.Types (FromJSONKey, ToJSONKey)
 
-data PriorityType = Low | Medium | High deriving (Show, Eq, Ord)
+
+data PriorityType = Low | Medium | High deriving (Show, Eq, Ord, Generic)
+
+instance FromJSON PriorityType --Autoderivado
+instance ToJSON PriorityType
 
 data Task = Task {
     taskId :: Int,
@@ -15,4 +23,10 @@ data Task = Task {
     requiredSkills :: [String],
     requiredResources :: [(Resource, Int)], --Cantidad de cada recurso necesario para realizar la tarea
     dependencies :: [Task] --Tareas que deben finalizar antes de que esta pueda comenzar(pendiente)
-} deriving (Show, Eq, Ord)
+} deriving (Show, Eq, Ord, Generic)
+
+instance FromJSON Task --Autoderivado
+instance ToJSON Task
+
+instance FromJSONKey Task
+instance ToJSONKey Task
