@@ -40,7 +40,19 @@
         </div>
 
         <!-- Botón para calcular asignación de tareas -->
-        <button class="btn calculate-btn">📊 Calcular Asignación de Tareas</button>
+        <button class="btn calculate-btn" onclick="calculateAssignment()">📊 Calcular Asignación de Tareas</button>
+
+        <!-- Contenedor para mostrar la asignación de tareas -->
+        <div class="list-section">
+            <h2>📊 Asignación de Tareas</h2>
+            <div id="assignment" class="assignment-list"></div>
+        </div>
+
+        <!-- Contenedor para mostrar las tareas no asignadas -->
+        <div class="list-section">
+            <h2>⚠️ Tareas No Asignadas</h2>
+            <div id="unassignedTasks" class="unassigned-task-list"></div>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>

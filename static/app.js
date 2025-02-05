@@ -196,3 +196,54 @@ async function addWorker() {
         alert("Error al agregar el trabajador. Consulte la consola para más detalles.");
     }
 }
+async function calculateAssignment() {
+    try {
+        const response = await fetch("http://localhost:3000/api/schedule", {
+            method: "POST"
+        });
+        if (!response.ok) throw new Error("Error al calcular la asignación de tareas");
+
+        const [assignedTasks, unassignedTasks] = await response.json();
+        const assignmentContainer = document.getElementById("assignment");
+        const unassignedTasksContainer = document.getElementById("unassignedTasks");
+        assignmentContainer.innerHTML = "";
+        unassignedTasksContainer.innerHTML = "";
+
+        if (assignedTasks.length === 0) {
+            assignmentContainer.innerHTML = "<p>No se pudo calcular la asignación de tareas.</p>";
+        } else {
+            assignedTasks.forEach(([task, workers, timeSlot]) => {
+                let assignmentElement = document.createElement("div");
+                assignmentElement.className = "assignment";
+                assignmentElement.innerHTML = `
+                    <strong>📝 Tarea: ${task.taskId} - ${task.description}</strong><br>
+                    <span>Trabajadores asig. : ${workers.map(w => w.workerName).join(", ")}</span><br>
+                    <span>Horario de realiz. : ${timeSlot.startHour}:00 - ${timeSlot.endHour}:00</span>
+                `;
+                assignmentContainer.appendChild(assignmentElement);
+            });
+        }
+
+        if (unassignedTasks.length === 0) {
+            unassignedTasksContainer.innerHTML = "<p>Todas las tareas fueron asignadas.</p>";
+        } else {
+            unassignedTasks.forEach(task => {
+                let unassignedTaskElement = document.createElement("div");
+                unassignedTaskElement.className = "unassigned-task";
+                unassignedTaskElement.innerHTML = `
+                    <strong>📝 Tarea: ${task.taskId} - ${task.description}</strong><br>
+                    <span>Duración: ${task.estimatedTime} horas</span><br>
+                    <span>Deadline: ${task.deadline}</span><br>
+                    <span>Prioridad: ${task.priority}</span><br>
+                    <span>Skills: ${task.requiredSkills.join(", ") || "Ninguno"}</span>
+                `;
+                unassignedTasksContainer.appendChild(unassignedTaskElement);
+            });
+        }
+
+    } catch (error) {
+        console.error("Error calculando la asignación de tareas:", error);
+        document.getElementById("assignment").innerHTML = "<p style='color: red;'>Error al calcular la asignación de tareas.</p>";
+        document.getElementById("unassignedTasks").innerHTML = "<p style='color: red;'>Error al calcular las tareas no asignadas.</p>";
+    }
+}

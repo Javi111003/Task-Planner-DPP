@@ -8,10 +8,13 @@ import Data.List (maximumBy)
 import Data.Ord (comparing)
 
 -- Encuentra todas las posibles soluciones y seleciona la mejor
-solve :: [Task] -> [Worker] -> TimeSlot -> IO [(Task, [Worker], TimeSlot)]
+solve :: [Task] -> [Worker] -> TimeSlot -> IO ([(Task, [Worker], TimeSlot)],[Task])
 solve tasks workers t = do 
     results <- find_all tasks workers t  -- Captura el resultado de find_all
-    return (getBest results)  -- Usa getBest en los resultados
+    let bestSolution = (getBest results)  -- Usa getBest en los resultados
+    let assignedTasks = map (\(task, _, _) -> task) bestSolution
+    let unassignedTasks = filter (`notElem` assignedTasks) tasks
+    return (bestSolution, unassignedTasks)
 
 getBest :: [[(Task, [Worker], TimeSlot)]] -> [(Task, [Worker], TimeSlot)]
 getBest [] = []  -- Manejar el caso vacío
