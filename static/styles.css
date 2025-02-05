@@ -106,6 +106,8 @@ input {
 .list-section {
     margin-top: 20px;
     text-align: left;
+    max-height: 300px; /* Altura máxima para las listas */
+    overflow-y: auto; /* Habilitar desplazamiento vertical */
 }
 
 .task, .worker {
@@ -116,4 +118,17 @@ input {
     border-radius: 5px;
     position: relative;
     padding-right: 40px; /* Espacio para el botón de eliminación */
+}
+
+.assignment, .unassigned-task {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 5px 0;
+    border-left: 5px solid #28a745;
+    border-radius: 15px;
+    position: relative;
+}
+
+.unassigned-task {
+    border-left-color: #ffc107; /* Cambiar el color del borde a amarillo */
 }

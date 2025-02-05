@@ -11,9 +11,10 @@ import Data.Text.Lazy (pack)
 import Network.Wai (Middleware, Application)  -- Importar Middleware y Application
 import Network.Wai.Middleware.Cors (simpleCors)  -- Middleware CORS simple
 import Network.Wai.Middleware.Static (staticPolicy, addBase, (>->))
-import System.IO (FilePath)
 import Model.SystemState (SystemState(..))
+import Core.Scheduler.Backtracking (solve)
 import Model.Task (Task(..))
+import Model.TimeSlot (TimeSlot(..))
 import Model.Worker (Worker(..))
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -98,4 +99,6 @@ postWorkerHandler stateRef = do
 
 scheduleHandler :: AppState -> ActionM ()
 scheduleHandler stateRef = do
-  json ("Tareas programadas" :: String)
+  state <- liftIO $ readIORef stateRef 
+  (assignedTasks, unassignedTasks) <- liftIO $ solve (Set.toList (tasks state)) (Set.toList (workers state)) (TimeSlot 8 15)
+  json (assignedTasks, unassignedTasks)
