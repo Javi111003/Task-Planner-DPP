@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Task Planner</h1>
+
+        <div class="form-list-container">
+            <!-- Sección para agregar tareas -->
+            <div class="form-section">
+                <h2>📝 Agregar Tarea</h2>
+                <input type="text" id="taskName" placeholder="Nombre de la tarea">
+                <input type="number" id="taskDuration" placeholder="Duración (horas)">
+                <input type="date" id="taskDeadline">
+                <input type="text" id="taskSkills" placeholder="Habilidades requeridas (separadas por comas)">
+                <button class="btn" onclick="addTask()">➕ Agregar Tarea</button>
+                <div class="list-section">
+                    <h2>📋 Lista de Tareas</h2>
+                    <div id="tasks" class="task-list"></div>
+                </div>
+            </div>
+
+            <!-- Sección para agregar trabajadores -->
+            <div class="form-section">
+                <h2>👷 Agregar Trabajador</h2>
+                <input type="text" id="workerName" placeholder="Nombre del trabajador">
+                <input type="text" id="workerSkills" placeholder="Habilidades (separadas por comas)">
+                <button class="btn" onclick="addWorker()">➕ Agregar Trabajador</button>
+                <div class="list-section">
+                    <h2>👩‍🏭👷 Lista de Trabajadores</h2>
+                    <div id="workers" class="worker-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón para calcular asignación de tareas -->
+        <button class="btn calculate-btn">📊 Calcular Asignación de Tareas</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

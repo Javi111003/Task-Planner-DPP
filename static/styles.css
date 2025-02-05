@@ -1,0 +1,119 @@
+/* Estilos globales */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Contenedor principal */
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* Contenedor de formularios y listas */
+.form-list-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Botón */
+.btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* Botón de eliminación */
+.delete-btn {
+    background: transparent;
+    color: #dc3545;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.delete-btn:hover {
+    color: #c82333;
+}
+
+/* Botón de calcular asignación */
+.calculate-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.calculate-btn:hover {
+    background: #218838;
+}
+
+/* Secciones de formularios */
+.form-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: left;
+    flex: 1;
+}
+
+.form-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Lista de tareas y trabajadores */
+.list-section {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.task, .worker {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 5px 0;
+    border-left: 5px solid #007bff;
+    border-radius: 5px;
+    position: relative;
+    padding-right: 40px; /* Espacio para el botón de eliminación */
+}
