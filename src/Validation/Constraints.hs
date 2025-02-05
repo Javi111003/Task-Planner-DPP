@@ -11,6 +11,7 @@ import Data.Time.Calendar (Day)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.List (intersect, union)
+import Control.Monad (mapM_)
 
 -- Validación de habilidades del trabajador
 hasRequiredSkills :: Worker -> Task -> Bool
@@ -21,13 +22,20 @@ isMinCover :: [Worker] -> Task -> Bool
 isMinCover workers task = null [w | w <- workers, validateWorkerGroup (remove workers w) task]
 
 --Obtener que grupos de Trabajadores pueden hacer una tarea determinada
-getValidWorkingTeams :: Task -> [[Worker]] -> (Task, [[Worker]])
-getValidWorkingTeams task teams = (task, [team | team <- teams, validateWorkerGroup team task ,isMinCover team task])
+getValidWorkingTeams :: Task -> [[Worker]] -> [[Worker]]
+getValidWorkingTeams task teams = 
+    [team | team <- teams, validateWorkerGroup team task , isMinCover team task]
+    where
+        -- Impresión de depuración
+        _ = mapM_ (\team -> 
+            let isValid = validateWorkerGroup team task && isMinCover team task
+            in putStrLn $ "Evaluating team: " ++ show (map workerName team) ++ 
+                          " | Valid: " ++ show isValid) teams
 
 --Obtener los horarios en los que se puede realizar una tarea
 getValidTimesForTask :: (Task,[Worker]) -> TimeSlot -> [TimeSlot]
 getValidTimesForTask (task, workers) lot  = let ts = [TimeSlot a b | a <- [(startHour lot) .. (endHour lot)], b <- [(startHour lot) .. (endHour lot)], a <= b, b - a == estimatedTime task]
-                                        in [t | t <- ts, isPossibleWorkForAll workers t]
+                                        in [ t| t <- ts, isPossibleWorkForAll workers t ]
 
 isPossibleWorkForAll :: [Worker] -> TimeSlot -> Bool
 isPossibleWorkForAll [] _ = True
@@ -37,7 +45,7 @@ isPossibleWorkForAll (worker:workers) timeSlot = isWorkerAvailable worker timeSl
 isWorkerAvailable :: Worker -> TimeSlot -> Bool
 isWorkerAvailable worker slot =
   not (any (overlaps slot) (currentSchedule worker))
-  where overlaps s1 s2 = startHour s1 < endHour s2 && endHour s1 > startHour s2
+  where overlaps s1 s2 = startHour s1 <= endHour s2 && endHour s1 >= startHour s2
 
 -- Validación de recursos
 --isResourceAvailable :: Resource -> Int -> TimeSlot -> SystemState -> Bool
@@ -51,8 +59,8 @@ isWorkerAvailable worker slot =
 --      in (resourceQty resource - used) >= qty
 --  where
 --    overlaps s1 s2 = date s1 == date s2
---                   && startHour s1 < endHour s2
---                   && endHour s1 > startHour s2
+--                   && startHour s1 <= endHour s2
+--                   && endHour s1 => startHour s2
 
 -- Validación de grupo de trabajadores
 validateWorkerGroup :: [Worker] -> Task -> Bool
