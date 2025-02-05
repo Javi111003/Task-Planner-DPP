@@ -11,7 +11,7 @@ import Data.Text.Lazy (pack)
 import Network.Wai (Middleware, Application)  -- Importar Middleware y Application
 import Network.Wai.Middleware.Cors (simpleCors)  -- Middleware CORS simple
 import Network.Wai.Middleware.Static (staticPolicy, addBase, (>->))
---import Core.Scheduler.Greedy (scheduleTasks)
+import System.IO (FilePath)
 import Model.SystemState (SystemState(..))
 import Model.Task (Task(..))
 import Model.Worker (Worker(..))

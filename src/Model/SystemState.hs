@@ -26,5 +26,5 @@ data SystemState = SystemState
     unassignedTasks  :: [Task]  -- Tareas que quedan sin asignar           
   } deriving (Show, Generic)
 
---instance FromJSON SystemState --Autoderivado
---instance ToJSON SystemState
+instance FromJSON SystemState --Autoderivado
+instance ToJSON SystemState

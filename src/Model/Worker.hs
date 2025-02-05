@@ -4,9 +4,9 @@ module Model.Worker (Worker(..)) where
 import Data.Time.Calendar (Day)
 import Model.TimeSlot
 import Data.Map (Map)
---import GHC.Generics (Generic)
---import Data.Aeson (FromJSON, ToJSON)
---import Data.Aeson.Types (FromJSONKey, ToJSONKey)
+import GHC.Generics (Generic)
+import Data.Aeson (FromJSON, ToJSON)
+import Data.Aeson.Types (FromJSONKey, ToJSONKey)
 
 -- Trabajador
 -- workerId: Identifica univocamente a cada trabajador
@@ -18,15 +18,13 @@ data Worker = Worker {
     workerId :: Int,
     workerName :: String,
     skills :: [String],
-    currentSchedule :: [TimeSlot]
+    currentSchedule :: [TimeSlot],
+    availableDays :: [Day],
+    maxHoursPerDay :: Int
+} deriving (Show, Eq, Ord, Generic)
 
-    --availableDays :: [Day],
-    --maxHoursPerDay :: Int,
+instance FromJSON Worker --Autoderivado
+instance ToJSON Worker
 
-} deriving (Show, Eq, Ord)
-
---instance FromJSON Worker --Autoderivado
---instance ToJSON Worker
-
---instance FromJSONKey Worker
---instance ToJSONKey Worker
+instance FromJSONKey Worker
+instance ToJSONKey Worker
