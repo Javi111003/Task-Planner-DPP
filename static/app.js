@@ -5,13 +5,16 @@ async function loadTasks() {
 
         const tasks = await response.json();
         const taskContainer = document.getElementById("tasks");
+        const taskListHeader = document.getElementById("taskListHeader");
         taskContainer.innerHTML = "";
 
         if (tasks.length === 0) {
             taskContainer.innerHTML = "<p>No hay tareas disponibles.</p>";
+            taskListHeader.style.display = "none";
             return;
         }
 
+        taskListHeader.style.display = "block";
         tasks.forEach(task => {
             let taskElement = document.createElement("div");
             taskElement.className = "task";
@@ -111,20 +114,24 @@ async function loadWorkers() {
 
         const workers = await response.json();
         const workerContainer = document.getElementById("workers");
+        const workerListHeader = document.getElementById("workerListHeader");
         workerContainer.innerHTML = "";
 
         if (workers.length === 0) {
             workerContainer.innerHTML = "<p>No hay trabajadores disponibles.</p>";
+            workerListHeader.style.display = "none";
             return;
         }
 
+        workerListHeader.style.display = "block";
         workers.forEach(worker => {
             let workerElement = document.createElement("div");
             workerElement.className = "worker";
             workerElement.innerHTML = `
                 <strong>👤 ${worker.workerId} - ${worker.workerName}</strong><br>
                 <span>Skills: ${worker.skills.join(", ") || "Ninguno"}</span><br>
-                <button class="modern-btn" onclick="deleteWorker(${worker.workerId})">❌</button>            `;
+                <button class="modern-btn" onclick="deleteWorker(${worker.workerId})">❌</button>
+            `;
             workerContainer.appendChild(workerElement);
         });
 
@@ -206,12 +213,16 @@ async function calculateAssignment() {
         const [assignedTasks, unassignedTasks] = await response.json();
         const assignmentContainer = document.getElementById("assignment");
         const unassignedTasksContainer = document.getElementById("unassignedTasks");
+        const assignmentListHeader = document.getElementById("assignmentListHeader");
+        const unassignedTaskListHeader = document.getElementById("unassignedTaskListHeader");
         assignmentContainer.innerHTML = "";
         unassignedTasksContainer.innerHTML = "";
 
         if (assignedTasks.length === 0) {
             assignmentContainer.innerHTML = "<p>No se pudo calcular la asignación de tareas.</p>";
+            assignmentListHeader.style.display = "none";
         } else {
+            assignmentListHeader.style.display = "block";
             assignedTasks.forEach(([task, workers, timeSlot]) => {
                 let assignmentElement = document.createElement("div");
                 assignmentElement.className = "assignment";
@@ -226,7 +237,9 @@ async function calculateAssignment() {
 
         if (unassignedTasks.length === 0) {
             unassignedTasksContainer.innerHTML = "<p>Todas las tareas fueron asignadas.</p>";
+            unassignedTaskListHeader.style.display = "none";
         } else {
+            unassignedTaskListHeader.style.display = "block";
             unassignedTasks.forEach(task => {
                 let unassignedTaskElement = document.createElement("div");
                 unassignedTaskElement.className = "unassigned-task";

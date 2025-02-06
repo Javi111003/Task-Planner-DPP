@@ -21,7 +21,7 @@
                 <input type="text" id="taskSkills" placeholder="Habilidades requeridas (separadas por comas)">
                 <button class="btn" onclick="addTask()">➕ Agregar Tarea</button>
                 <div class="list-section">
-                    <h2>📋 Lista de Tareas</h2>
+                    <h2 class="list-header" id="taskListHeader" style="display: none;">📋 Lista de Tareas</h2>
                     <div id="tasks" class="task-list"></div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                 <input type="text" id="workerSkills" placeholder="Habilidades (separadas por comas)">
                 <button class="btn" onclick="addWorker()">➕ Agregar Trabajador</button>
                 <div class="list-section">
-                    <h2>👩‍🏭👷 Lista de Trabajadores</h2>
+                    <h2 class="list-header" id="workerListHeader" style="display: none;">👩‍🏭👷 Lista de Trabajadores</h2>
                     <div id="workers" class="worker-list"></div>
                 </div>
             </div>
@@ -44,13 +44,13 @@
 
         <!-- Contenedor para mostrar la asignación de tareas -->
         <div class="list-section">
-            <h2>📊 Asignación de Tareas</h2>
+            <h2 class="list-header" id="assignmentListHeader" style="display: none;">📊 Asignación de Tareas</h2>
             <div id="assignment" class="assignment-list"></div>
         </div>
 
         <!-- Contenedor para mostrar las tareas no asignadas -->
         <div class="list-section">
-            <h2>⚠️ Tareas No Asignadas</h2>
+            <h2 class="list-header" id="unassignedTaskListHeader" style="display: none;">⚠️ Tareas No Asignadas</h2>
             <div id="unassignedTasks" class="unassigned-task-list"></div>
         </div>
     </div>
