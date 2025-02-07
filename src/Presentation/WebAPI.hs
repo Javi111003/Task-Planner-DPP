@@ -18,6 +18,7 @@ import Model.TimeSlot (TimeSlot(..))
 import Model.Worker (Worker(..))
 import Data.Set (Set)
 import qualified Data.Set as Set
+import qualified Data.Map as Map
 
 -- Estado global compartido
 type AppState = IORef SystemState
@@ -59,7 +60,7 @@ postTaskHandler stateRef = do
   taskData <- jsonData :: ActionM Task
   liftIO $ modifyIORef' stateRef $ \state -> 
     let newId = nextTaskId state
-        newTask = taskData { taskId = newId }
+        newTask = taskData { taskId = newId , toDoSlots = Set.fromList [TimeSlot a b | a <- [8 .. 17], b <- [8 .. 17], a <= b, b - a == (estimatedTime taskData)]}
     in state { 
         tasks = Set.insert newTask (tasks state),
         nextTaskId = (nextTaskId state + 1)
@@ -100,5 +101,5 @@ postWorkerHandler stateRef = do
 scheduleHandler :: AppState -> ActionM ()
 scheduleHandler stateRef = do
   state <- liftIO $ readIORef stateRef 
-  (assignedTasks, unassignedTasks) <- liftIO $ solve (Set.toList (tasks state)) (Set.toList (workers state)) (TimeSlot 8 15)
-  json (assignedTasks, unassignedTasks)
+  (assignedTasks, unassignedTasks) <- liftIO $ solve (tasks state) (workers state)
+  json (assignedTasks, Set.toList unassignedTasks)

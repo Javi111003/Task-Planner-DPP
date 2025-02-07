@@ -10,70 +10,43 @@ import Model.SystemState
 import Data.Time.Calendar (Day)
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.List (intersect, union)
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Control.Monad (mapM_)
 
 -- Validación de habilidades del trabajador
 hasRequiredSkills :: Worker -> Task -> Bool
-hasRequiredSkills worker task = all (`elem` skills worker) (requiredSkills task)
+hasRequiredSkills worker task = requiredSkills task `Set.isSubsetOf` skills worker
 
---Quitar Trabajador Innecesario
-isMinCover :: [Worker] -> Task -> Bool
-isMinCover workers task = null [w | w <- workers, validateWorkerGroup (remove workers w) task]
+-- Quitar Trabajador Innecesario
+isMinCover :: Set Worker -> Task -> Bool
+isMinCover workers task = 
+    Set.null (Set.filter (\w -> validateWorkerGroup (Set.delete w workers) task) workers)
 
---Obtener que grupos de Trabajadores pueden hacer una tarea determinada
-getValidWorkingTeams :: Task -> [[Worker]] -> [[Worker]]
+-- Obtener grupos de trabajadores que pueden hacer una tarea determinada
+getValidWorkingTeams :: Task -> Set (Set Worker) -> Set (Set Worker)
 getValidWorkingTeams task teams = 
-    [team | team <- teams, validateWorkerGroup team task , isMinCover team task]
-    where
-        -- Impresión de depuración
-        _ = mapM_ (\team -> 
-            let isValid = validateWorkerGroup team task && isMinCover team task
-            in putStrLn $ "Evaluating team: " ++ show (map workerName team) ++ 
-                          " | Valid: " ++ show isValid) teams
+    Set.filter (\team -> validateWorkerGroup team task && isMinCover team task) teams
 
---Obtener los horarios en los que se puede realizar una tarea
-getValidTimesForTask :: (Task,[Worker]) -> TimeSlot -> [TimeSlot]
-getValidTimesForTask (task, workers) lot  = let ts = [TimeSlot a b | a <- [(startHour lot) .. (endHour lot)], b <- [(startHour lot) .. (endHour lot)], a <= b, b - a == estimatedTime task]
-                                        in [ t| t <- ts, isPossibleWorkForAll workers t ]
+-- Obtener los horarios en los que se puede realizar una tarea
+getValidTimesForTask :: (Task, Set Worker) -> Set TimeSlot
+getValidTimesForTask (task, workers) = 
+    Set.filter (\t -> isPossibleWorkForAll (Set.toList workers) t) (toDoSlots task)
 
+-- Verifica si todos los trabajadores están disponibles en un horario
 isPossibleWorkForAll :: [Worker] -> TimeSlot -> Bool
 isPossibleWorkForAll [] _ = True
-isPossibleWorkForAll (worker:workers) timeSlot = isWorkerAvailable worker timeSlot && isPossibleWorkForAll workers timeSlot
+isPossibleWorkForAll (worker:workers) timeSlot = 
+    isWorkerAvailable worker timeSlot && isPossibleWorkForAll workers timeSlot
 
 -- Validación de disponibilidad temporal
 isWorkerAvailable :: Worker -> TimeSlot -> Bool
 isWorkerAvailable worker slot =
-  not (any (overlaps slot) (currentSchedule worker))
-  where overlaps s1 s2 = startHour s1 <= endHour s2 && endHour s1 >= startHour s2
-
--- Validación de recursos
---isResourceAvailable :: Resource -> Int -> TimeSlot -> SystemState -> Bool
---isResourceAvailable resource qty slot SystemState{..} =
---  case resourceType resource of
---    Infinite -> True
---    Limited ->
---      let dayUsage = Map.findWithDefault Map.empty resource resourcesUsage
---          slotUsage = Map.findWithDefault Map.empty (date slot) dayUsage
---          used = sum $ Map.filterWithKey (\k _ -> overlaps k slot) slotUsage
---      in (resourceQty resource - used) >= qty
---  where
---    overlaps s1 s2 = date s1 == date s2
---                   && startHour s1 <= endHour s2
---                   && endHour s1 => startHour s2
+    not (any (overlaps slot) (Set.toList $ currentSchedule worker))
+  where
+    overlaps s1 s2 = startHour s1 < endHour s2 && endHour s1 > startHour s2
 
 -- Validación de grupo de trabajadores
-validateWorkerGroup :: [Worker] -> Task -> Bool
+validateWorkerGroup :: Set Worker -> Task -> Bool
 validateWorkerGroup workers task =
-  all (`elem` concatMap skills workers) (requiredSkills task)
-
--- Validación completa para una tarea
---validateAssignment :: Task -> [Worker] -> TimeSlot -> SystemState -> Bool
---validateAssignment task workers slot state =
---  validateWorkerGroup workers task &&
---  all (\w -> isWorkerAvailable w slot state) workers &&
---  all (\(r, q) -> isResourceAvailable r q slot state) (requiredResources task)
-
-remove :: Eq a => [a] -> a -> [a]
-remove [] _ = []
-remove (x:xs) y = if x == y then xs else x: remove xs y
+    requiredSkills task `Set.isSubsetOf` Set.unions (Set.map skills workers)
