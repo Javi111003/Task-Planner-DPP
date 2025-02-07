@@ -82,7 +82,8 @@ async function addTask() {
             priority,
             requiredSkills,
             requiredResources: [],
-            dependencies: []
+            dependencies: [],
+            toDoSlots: []
         };
 
         console.log("Datos de la nueva tarea:", newTask);

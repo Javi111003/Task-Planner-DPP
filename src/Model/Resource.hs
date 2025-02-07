@@ -7,7 +7,7 @@ import Data.Aeson.Types (FromJSONKey, ToJSONKey)
 
 data ResourceType = Infinite | Limited deriving (Show, Eq, Ord, Generic)
 
-instance FromJSON ResourceType --Autoderivado
+instance FromJSON ResourceType
 instance ToJSON ResourceType
 
 data Resource = Resource{
@@ -17,7 +17,7 @@ data Resource = Resource{
     resourceType :: ResourceType
 } deriving (Show, Eq, Ord, Generic)
 
-instance FromJSON Resource --Autoderivado
+instance FromJSON Resource 
 instance ToJSON Resource
 
 instance FromJSONKey Resource

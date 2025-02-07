@@ -19,7 +19,7 @@ import Control.Concurrent (forkIO)
 
 main :: IO ()
 main = do
-  let initialState = SystemState emptySet emptySet 1 1 Map.empty Map.empty Map.empty [] -- Crear estado inicial en memoria
+  let initialState = SystemState emptySet emptySet 1 1 Map.empty Map.empty Map.empty emptySet -- Crear estado inicial en memoria
   stateRef <- newIORef initialState
   
   -- Iniciar servidor
@@ -28,7 +28,6 @@ main = do
   -- Abrir navegador web
   openBrowser "http://localhost:3000/index.html"
   
-  -- Mantener el programa corriendo
   getLine
   return ()
 

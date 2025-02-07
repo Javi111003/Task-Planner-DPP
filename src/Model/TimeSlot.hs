@@ -11,12 +11,11 @@ import Data.Aeson.Types (FromJSONKey, ToJSONKey)
 -- Representa un espacio de tiempo con inicio y fin
 data TimeSlot = TimeSlot
     { 
-      --date :: Day,
       startHour :: Int, --9 para 9:00 am
       endHour :: Int  --17 para 5:00 pm
     } deriving (Eq, Ord, Show, Generic)
 
-instance FromJSON TimeSlot --Autoderivado
+instance FromJSON TimeSlot
 instance ToJSON TimeSlot
 
 instance FromJSONKey TimeSlot

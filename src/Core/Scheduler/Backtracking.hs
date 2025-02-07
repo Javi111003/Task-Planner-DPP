@@ -1,63 +1,64 @@
+{-# LANGUAGE RecordWildCards #-}
+
 module Core.Scheduler.Backtracking where
 
-import Model.Task
-import Model.Worker
-import Model.TimeSlot
+import Model.Task (Task(..))
+import Model.Worker (Worker(..))
+import Model.TimeSlot (TimeSlot(..))
 import Validation.Constraints (getValidWorkingTeams, getValidTimesForTask)
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.List (maximumBy)
 import Data.Ord (comparing)
 
--- Encuentra todas las posibles soluciones y seleciona la mejor
-solve :: [Task] -> [Worker] -> TimeSlot -> IO ([(Task, [Worker], TimeSlot)],[Task])
-solve tasks workers t = do 
-    results <- find_all tasks workers t  -- Captura el resultado de find_all
-    let bestSolution = (getBest results)  -- Usa getBest en los resultados
-    let assignedTasks = map (\(task, _, _) -> task) bestSolution
-    let unassignedTasks = filter (`notElem` assignedTasks) tasks
+-- Encuentra todas las posibles soluciones y selecciona la mejor
+solve :: Set Task -> Set Worker -> IO ([(Task, Set Worker, TimeSlot)], Set Task)
+solve tasks workers = do 
+    results <- find_all tasks workers
+    let bestSolution = getBest results
+    let assignedTasks = Set.fromList $ map (\(task, _, _) -> task) bestSolution
+    let unassignedTasks = Set.difference tasks assignedTasks
     return (bestSolution, unassignedTasks)
 
-getBest :: [[(Task, [Worker], TimeSlot)]] -> [(Task, [Worker], TimeSlot)]
-getBest [] = []  -- Manejar el caso vacío
-getBest lists = maximumBy (comparing length) lists  -- Retornar la lista con mayor longitud
+getBest :: [[(Task, Set Worker, TimeSlot)]] -> [(Task, Set Worker, TimeSlot)]
+getBest [] = []
+getBest lists = maximumBy (comparing length) lists
 
--- Encuentra todas las posibles soluciones mediante la tecnica de Backtracking lo cojo o no lo cojo
-find_all :: [Task] -> [Worker] -> TimeSlot -> IO [[(Task, [Worker], TimeSlot)]]
-find_all [] _  _ = return []  -- Retorna una lista vacía en IO
-find_all (t : ts) ws time = do
-    results <- assignTask (t:ts) ws time
-    restResults <- find_all ts ws time  -- Llama recursivamente
-    combinedResults <- return (results ++ restResults)  -- Combina los resultados
-    return combinedResults  -- Retorna los resultados combinados
+-- Encuentra todas las posibles soluciones mediante la técnica de Backtracking
+find_all :: Set Task -> Set Worker -> IO [[(Task, Set Worker, TimeSlot)]]
+find_all tasks workers
+    | Set.null tasks = return [[]]
+    | otherwise = do
+        let (t, ts) = (Set.findMin tasks, Set.delete (Set.findMin tasks) tasks)
+        results <- assignTask t ts workers
+        restResults <- find_all ts workers
+        return (results ++ restResults)
 
--- Halla todas las posibles combinaciones tras asignar la tarea a cada uno de sus posibles equipos de trabajo y horario
-assignTask :: [Task] -> [Worker] -> TimeSlot -> IO [[(Task, [Worker], TimeSlot)]]
-assignTask (t : ts) workers time = do
+assignTask :: Task -> Set Task -> Set Worker -> IO [[(Task, Set Worker, TimeSlot)]]
+assignTask task tasks workers = do
     let workerSubsets = powerSet workers
-    let validTeams = getValidWorkingTeams t workerSubsets
-
-    results <- mapM assignTeams validTeams
-    let finalResults = concat results
-    return finalResults
+    let validTeams = getValidWorkingTeams task workerSubsets
+    results <- mapM assignTeams (Set.toList validTeams)
+    return (concat results)
   where
-    assignTeams w = do
-      let validTimes = getValidTimesForTask (t, w) time
+    assignTeams team = do
+      let validTimes = Set.toList $ getValidTimesForTask (task, team)
       assignments <- mapM (\assTime -> do
-        let updatedWorkers = updateWorkers workers w assTime
-        assignRest <- find_all ts updatedWorkers time
-        let currentAssignment = [(t, w, assTime)]
-        return $ if null assignRest
-                then [currentAssignment]
-                else map (currentAssignment ++) assignRest) validTimes
+          let updatedWorkers = updateWorkers workers team assTime
+          assignRest <- find_all tasks updatedWorkers
+          let currentAssignment = [(task, team, assTime)]
+          return $ if null assignRest
+                  then [currentAssignment]
+                  else map (currentAssignment ++) assignRest) validTimes
       return (concat assignments)
 
-updateWorkers :: [Worker] -> [Worker] -> TimeSlot -> [Worker]
+updateWorkers :: Set Worker -> Set Worker -> TimeSlot -> Set Worker
 updateWorkers allWorkers workersToUpdate newTimeSlot = 
-    map updateWorker allWorkers
+    Set.map updateWorker allWorkers
   where
     updateWorker worker
-      | worker `elem` workersToUpdate = worker { currentSchedule = newTimeSlot : currentSchedule worker }
+      | Set.member worker workersToUpdate = worker { currentSchedule = Set.insert newTimeSlot (currentSchedule worker) }
       | otherwise = worker
 
-powerSet :: [a] -> [[a]]
-powerSet [] = [[]]  -- El conjunto potencia de una lista vacía es una lista que contiene el conjunto vacío
-powerSet (x:xs) = powerSet xs ++ map (x:) (powerSet xs)
+powerSet :: Ord a => Set a -> Set (Set a)
+powerSet = Set.foldr (\x acc -> acc `Set.union` Set.map (Set.insert x) acc) (Set.singleton Set.empty)

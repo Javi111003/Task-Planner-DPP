@@ -7,24 +7,24 @@ import Data.Map (Map)
 import GHC.Generics (Generic)
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Aeson.Types (FromJSONKey, ToJSONKey)
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 -- Trabajador
 -- workerId: Identifica univocamente a cada trabajador
 -- workerName: Nombre del trabajador(para mostrar)
--- skills : listad de habilidades que posee el trabajador
--- currentSchedule: lista de intervalos de tiempo durante el que esta actualmente ocupado
-
+-- skills : conjunto de habilidades que posee el trabajador
+-- currentSchedule: conjunto de intervalos de tiempo durante el que esta actualmente ocupado
 data Worker = Worker {
     workerId :: Int,
     workerName :: String,
-    skills :: [String],
-    currentSchedule :: [TimeSlot],
-    availableDays :: [Day],
+    skills :: Set String,
+    currentSchedule :: Set TimeSlot,
+    availableDays :: Set Day,
     maxHoursPerDay :: Int
 } deriving (Show, Eq, Ord, Generic)
 
 instance FromJSON Worker --Autoderivado
 instance ToJSON Worker
-
 instance FromJSONKey Worker
 instance ToJSONKey Worker
